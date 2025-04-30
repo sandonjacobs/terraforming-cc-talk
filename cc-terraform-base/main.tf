@@ -1,7 +1,7 @@
 # Configure the Confluent Provider
 terraform {
   backend "local" {
-    workspace_dir = "~/.terraform-state/terraforming-talk/.tfstate/terraform.state"
+    workspace_dir = "~/.terraform-state/terraforming-talk/cc-terraform-base/.tfstate/terraform.state"
   }
 
   required_providers {
@@ -34,4 +34,6 @@ provider "vault" {
       password = var.vault_password
     }
   }
+  address = var.vault_addr
+#   token = "root"
 }

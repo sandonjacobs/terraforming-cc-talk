@@ -12,10 +12,10 @@ services:
       - VAULT_USERNAME=myuser
       - VAULT_PASSWORD=mypassword
       - VAULT_UI=true
+      - VAULT_ADDR=http://127.0.0.1:8200
     cap_add:
       - IPC_LOCK
     volumes:
       - ./vault_data:/vault/data
       - ./scripts:/scripts
-    entrypoint: /scripts/init-vault.sh
-    command: server -dev -dev-listen-address=0.0.0.0:8200 -dev-root-token-id=root
+    entrypoint: ["/bin/sh", "/scripts/init-vault.sh"]

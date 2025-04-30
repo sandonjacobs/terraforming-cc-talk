@@ -35,12 +35,15 @@ variable "vault_addr" {
 variable "vault_user" {
   type = string
   description = "Vault user"
-  default = "terraforming"
 }
 
 variable "vault_password" {
   type = string
   description = "Vault password"
-  default = "terraforming"
 }
 
+variable "vault_path" {
+  type = string
+  description = "Vault path"
+  default = "secret/current-london-2025"
+}
