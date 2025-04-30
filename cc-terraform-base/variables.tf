@@ -20,6 +20,12 @@ variable "cc_env_display_name" {
   default = "current-london-2025"
 }
 
+variable "cc_kafka_cluster_name" {
+  type = string
+  description = "Name of Confluent Cloud Kafka Cluster to Manage"
+  default = "current-london-2025"
+}
+
 variable "vault_addr" {
   type = string
   description = "Vault address"

@@ -1,7 +1,7 @@
 # Configure the Confluent Provider
 terraform {
   backend "local" {
-    workspace_dir = "~/.terraform-state/${var.cc_env_display_name}/.tfstate/terraform.state"
+    workspace_dir = "~/.terraform-state/terraforming-talk/.tfstate/terraform.state"
   }
 
   required_providers {
