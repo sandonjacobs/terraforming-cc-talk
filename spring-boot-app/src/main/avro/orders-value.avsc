@@ -1,0 +1,15 @@
+{
+    "type": "record",
+    "namespace": "io.confluent.examples.avro",
+    "name": "Order",
+    "fields": [
+        {"name": "id", "type": "string"},
+        {"name": "customer_id", "type": "string"},
+        {"name": "subtotal", "type": "double"},
+        {"name": "tax", "type": "double"},
+        {"name": "total", "type": "double"},
+        {"name": "created_at", "type": {"type": "long", "logicalType": "timestamp-millis"}},
+        {"name": "items", "type": {"type": "array", "items": "OrderItem"}},
+        {"name": "shipping_address", "type": "Address"}
+    ]
+}

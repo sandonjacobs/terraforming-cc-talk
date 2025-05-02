@@ -1,0 +1,12 @@
+{
+    "type": "record",
+    "namespace": "io.confluent.examples.avro",
+    "name": "Address",
+    "fields": [
+        {"name": "street", "type": "string"},
+        {"name": "city", "type": "string"},
+        {"name": "state", "type": "string"},
+        {"name": "postal_code", "type": "string"},
+        {"name": "country", "type": "string"}
+    ]
+} 
