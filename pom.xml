@@ -62,7 +62,7 @@
   </build>
 
   <modules>
-    <module>cc-terraform-base</module>
+    <!-- <module>cc-terraform-base</module> -->
     <module>spring-boot-app</module>
   </modules>
 

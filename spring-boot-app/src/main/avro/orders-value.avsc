@@ -9,7 +9,7 @@
         {"name": "tax", "type": "double"},
         {"name": "total", "type": "double"},
         {"name": "created_at", "type": {"type": "long", "logicalType": "timestamp-millis"}},
-        {"name": "items", "type": {"type": "array", "items": "OrderItem"}},
-        {"name": "shipping_address", "type": "Address"}
+        {"name": "items", "type": {"type": "array", "items": "io.confluent.examples.avro.OrderItem"}},
+        {"name": "shipping_address", "type": "io.confluent.examples.avro.Address"}
     ]
 }
