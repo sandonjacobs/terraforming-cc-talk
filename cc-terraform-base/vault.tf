@@ -1,3 +1,17 @@
+
+resource "vault_generic_secret" "cc_environment" {
+  path = "${var.vault_path}/confluent_environment"
+
+  data_json = jsonencode({
+    cc_environment_display_name = confluent_environment.cc_env.display_name
+    cc_environment_id = confluent_environment.cc_env.id
+  })
+
+  lifecycle {
+    prevent_destroy = false
+  }
+}
+
 resource "vault_generic_secret" "cc_kafka_app_manager_api_key" {
     
   path = "${var.vault_path}/kafka"
