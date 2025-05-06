@@ -12,8 +12,8 @@ resource "confluent_kafka_topic" "noaa_zones_inbound" {
     "retention.ms" = "604800000" # 7 days
   }
   credentials {
-    key    = local.kafka_app_manager_api_key
-    secret = local.kafka_app_manager_api_secret
+    key    = local.kafka_cluster_mgr_api_key
+    secret = local.kafka_cluster_mgr_secret
   }
 
   lifecycle {

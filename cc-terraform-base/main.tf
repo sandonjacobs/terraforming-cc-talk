@@ -9,6 +9,10 @@ terraform {
       source  = "confluentinc/confluent"
       version = "2.25.0"
     }
+    vault = {
+      source  = "hashicorp/vault"
+      version = "4.5.0"
+    }
   }
 }
 
