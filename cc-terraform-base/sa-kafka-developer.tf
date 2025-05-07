@@ -27,3 +27,10 @@ resource "confluent_api_key" "kafka-developer" {
     confluent_service_account.kafka-developer
   ]
 }
+
+resource "confluent_role_binding" "kafka-developer-data-steward" {
+  principal   = "User:${confluent_service_account.kafka-developer.id}"
+  role_name   = "DataSteward"
+  crn_pattern = confluent_environment.cc_env.resource_name
+}
+

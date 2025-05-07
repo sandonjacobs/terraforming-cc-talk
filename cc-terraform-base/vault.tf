@@ -56,42 +56,50 @@ resource "vault_generic_secret" "kafka_developer" {
   }
 }
 
+resource "vault_generic_secret" "flink_developer" {
+  path      = "${var.vault_path}/flink_developer"
+  data_json = jsonencode({
+    svc_acct_id = confluent_service_account.flink-developer.id
+    api_key_id = confluent_api_key.flink-developer.id
+    api_key_secret = confluent_api_key.flink-developer.secret
+  })
 
-# resource "vault_generic_secret" "cc_schema_registry" {
-#
-#   path = "${var.vault_path}/schema-registry"
-#
-#   data_json = jsonencode({
-#     schema_registry_endpoint = data.confluent_schema_registry_cluster.advanced.rest_endpoint
-#     schema_registry_id = data.confluent_schema_registry_cluster.advanced.id
-#     schema_registry_api_key = confluent_api_key.env-manager-schema-registry-api-key.id
-#     schema_registry_api_secret = confluent_api_key.env-manager-schema-registry-api-key.secret
-#   })
-#
-#   depends_on = [
-#     confluent_api_key.env-manager-schema-registry-api-key,
-#     data.confluent_schema_registry_cluster.advanced
-#   ]
-#
-#   lifecycle {
-#     prevent_destroy = false
-#   }
-# }
-#
-# resource "vault_generic_secret" "cc_flink_weather_compute" {
-#
-#   path = "${var.vault_path}/flink_weather_compute"
-#
-#   data_json = jsonencode({
-#     flink_compute_pool_id = confluent_flink_compute_pool.weather_compute_pool.id
-#     flink_compute_pool_name = confluent_flink_compute_pool.weather_compute_pool.display_name
-#     flink_region_rest_endpoint = data.confluent_flink_region.main.rest_endpoint
-#     flink_api_key = confluent_api_key.flink-statements-runner.id
-#     flink_api_secret = confluent_api_key.flink-statements-runner.secret
-#     flink_stmt_runner_id = confluent_service_account.statements-runner.id
-#   })
-#
-#   lifecycle {
-#     prevent_destroy = false
-#   }
-# }
+  lifecycle {
+    prevent_destroy = false
+  }
+}
+
+resource "vault_generic_secret" "schema_registry" {
+
+  path = "${var.vault_path}/schema-registry"
+
+  data_json = jsonencode({
+    endpoint = data.confluent_schema_registry_cluster.advanced.rest_endpoint
+    id = data.confluent_schema_registry_cluster.advanced.id
+    # schema_registry_api_key = confluent_api_key.env-manager-schema-registry-api-key.id
+    # schema_registry_api_secret = confluent_api_key.env-manager-schema-registry-api-key.secret
+  })
+
+  depends_on = [
+    data.confluent_schema_registry_cluster.advanced
+  ]
+
+  lifecycle {
+    prevent_destroy = false
+  }
+}
+
+resource "vault_generic_secret" "flink_weather_compute" {
+
+  path = "${var.vault_path}/flink_weather_compute"
+
+  data_json = jsonencode({
+    pool_id = confluent_flink_compute_pool.weather_compute_pool.id
+    pool_name = confluent_flink_compute_pool.weather_compute_pool.display_name
+    region_rest_endpoint = data.confluent_flink_region.weather_compute_pool.region
+  })
+
+  lifecycle {
+    prevent_destroy = false
+  }
+}
