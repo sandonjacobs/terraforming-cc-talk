@@ -2,9 +2,9 @@ resource "vault_generic_secret" "cc_environment" {
   path = "${var.vault_path}/confluent_environment"
 
   data_json = jsonencode({
-    cc_org_id = var.org_id
-    cc_environment_display_name = confluent_environment.cc_env.display_name
-    cc_environment_id = confluent_environment.cc_env.id
+    id = confluent_environment.cc_env.id
+    org_id = var.org_id
+    display_name = confluent_environment.cc_env.display_name
     cloud_provider = var.cloud_provider
     cloud_region = var.cloud_region
   })
@@ -19,10 +19,11 @@ resource "vault_generic_secret" "cc_kafka" {
   path = "${var.vault_path}/kafka"
 
   data_json = jsonencode({
-    kafka_bootstrap_server = confluent_kafka_cluster.kafka_cluster.bootstrap_endpoint
-    kafka_cluster_id = confluent_kafka_cluster.kafka_cluster.id
-    kafka_cluster_display_name = confluent_kafka_cluster.kafka_cluster.display_name
-    kafka_rest_endpoint = confluent_kafka_cluster.kafka_cluster.rest_endpoint
+    bootstrap_servers = confluent_kafka_cluster.kafka_cluster.bootstrap_endpoint
+    cluster_id = confluent_kafka_cluster.kafka_cluster.id
+    cluster_name = confluent_kafka_cluster.kafka_cluster.display_name
+    rest_endpoint = confluent_kafka_cluster.kafka_cluster.rest_endpoint
+    rbac_crn = confluent_kafka_cluster.kafka_cluster.rbac_crn
   })
 
   lifecycle {
@@ -41,6 +42,20 @@ resource "vault_generic_secret" "kafka_cluster_mgr" {
     prevent_destroy = false
   }
 }
+
+resource "vault_generic_secret" "kafka_developer" {
+  path      = "${var.vault_path}/kafka_developer"
+  data_json = jsonencode({
+    svc_acct_id = confluent_service_account.kafka-developer.id
+    api_key_id = confluent_api_key.kafka-developer.id
+    api_key_secret = confluent_api_key.kafka-developer.secret
+  })
+
+  lifecycle {
+    prevent_destroy = false
+  }
+}
+
 
 # resource "vault_generic_secret" "cc_schema_registry" {
 #

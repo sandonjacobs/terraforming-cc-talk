@@ -9,6 +9,10 @@ data "vault_generic_secret" "kafka_cluster_mgr" {
   path = "${var.vault_path}/kafka_cluster_mgr"
 }
 
+data "vault_generic_secret" "kafka_developer" {
+  path = "${var.vault_path}/kafka_developer"
+}
+
 # data "vault_generic_secret" "cc_schema_registry" {
 #   path = "${var.vault_path}/schema-registry"
 # }
@@ -18,17 +22,27 @@ data "vault_generic_secret" "kafka_cluster_mgr" {
 # }
 
 locals {
-  confluent_env_id = data.vault_generic_secret.confluent_environment.data["cc_environment_id"]
-  confluent_env_name = data.vault_generic_secret.confluent_environment.data["cc_environment_display_name"]
-  confluent_org_id = data.vault_generic_secret.confluent_environment.data["cc_org_id"]
+  confluent_env = {
+    id = data.vault_generic_secret.confluent_environment.data["id"]
+    display_name = data.vault_generic_secret.confluent_environment.data["display_name"]
+    org_id = data.vault_generic_secret.confluent_environment.data["org_id"]
+    cloud_provider = data.vault_generic_secret.confluent_environment.data["cloud_provider"]
+    cloud_region = data.vault_generic_secret.confluent_environment.data["cloud_region"]
+  }
 
-  kafka_bootstrap_server = data.vault_generic_secret.cc_kafka.data["kafka_bootstrap_server"]
-  kafka_rest_endpoint = data.vault_generic_secret.cc_kafka.data["kafka_rest_endpoint"]
-  kafka_cluster_id = data.vault_generic_secret.cc_kafka.data["kafka_cluster_id"]
-  kafka_cluster_name = data.vault_generic_secret.cc_kafka.data["kafka_cluster_display_name"]
+  kafka = {
+    bootstrap_servers = data.vault_generic_secret.cc_kafka.data["bootstrap_servers"]
+    rest_endpoint = data.vault_generic_secret.cc_kafka.data["rest_endpoint"]
+    cluster_id = data.vault_generic_secret.cc_kafka.data["cluster_id"]
+    cluster_name = data.vault_generic_secret.cc_kafka.data["cluster_name"]
+    rbac_crn = data.vault_generic_secret.cc_kafka.data["rbac_crn"]
+  }
 
-  kafka_cluster_mgr_api_key = data.vault_generic_secret.kafka_cluster_mgr.data["api_key"]
-  kafka_cluster_mgr_secret = data.vault_generic_secret.kafka_cluster_mgr.data["secret"]
+  sa_kafka_cluster_mgr = {
+    api_key_id = data.vault_generic_secret.kafka_cluster_mgr.data["api_key"]
+    api_key_secret = data.vault_generic_secret.kafka_cluster_mgr.data["secret"]
+  }
+
 
   # schema_registry_endpoint = data.vault_generic_secret.cc_schema_registry.data["schema_registry_endpoint"]
   # schema_registry_id = data.vault_generic_secret.cc_schema_registry.data["schema_registry_id"]
@@ -40,5 +54,11 @@ locals {
   # flink_weather_region_rest_endpoint = data.vault_generic_secret.flink_weather_compute.data["flink_region_rest_endpoint"]
   # flink_api_key = data.vault_generic_secret.flink_weather_compute.data["flink_api_key"]
   # flink_api_secret = data.vault_generic_secret.flink_weather_compute.data["flink_api_secret"]
+
+  kafka_developer = {
+    svc_acct_id = data.vault_generic_secret.kafka_developer.data["svc_acct_id"]
+    api_key_id = data.vault_generic_secret.kafka_developer.data["api_key_id"]
+    api_key_secret = data.vault_generic_secret.kafka_developer.data["api_key_secret"]
+  }
 
 }
