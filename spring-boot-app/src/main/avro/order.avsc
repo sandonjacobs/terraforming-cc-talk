@@ -1,0 +1,43 @@
+{
+  "namespace": "com.example.avro",
+  "type": "record",
+  "name": "Order",
+  "fields": [
+    {
+      "name": "orderId",
+      "type": "string"
+    },
+    {
+      "name": "customerId",
+      "type": "string"
+    },
+    {
+      "name": "orderDate",
+      "type": "long",
+      "logicalType": "timestamp-millis"
+    },
+    {
+      "name": "items",
+      "type": {
+        "type": "array",
+        "items": "OrderItem"
+      }
+    },
+    {
+      "name": "shippingAddress",
+      "type": "Address"
+    },
+    {
+      "name": "totalAmount",
+      "type": "double"
+    },
+    {
+      "name": "status",
+      "type": {
+        "type": "enum",
+        "name": "OrderStatus",
+        "symbols": ["PENDING", "PROCESSING", "SHIPPED", "DELIVERED", "CANCELLED"]
+      }
+    }
+  ]
+} 

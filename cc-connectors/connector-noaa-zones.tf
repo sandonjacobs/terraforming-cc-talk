@@ -51,36 +51,36 @@ resource "confluent_connector" "noaa_zones_source" {
 }
 
 # Flink Statement to transform target topic from connector
-# resource "confluent_flink_statement" "create_noaa_zones" {
-#   organization {
-#     id = local.confluent_env.org_id
-#   }
-#   environment {
-#     id = local.confluent_env.id
-#   }
-#   compute_pool {
-#     id = local.flink_weather_compute.id
-#   }
-#   principal {
-#     id = local.flink_developer.svc_acct_id
-#   }
-#   statement     = file("./flink-sql/zones/00__create_noaa_zones.sql")
-#   properties = {
-#     "sql.current-catalog"  = local.confluent_env.display_name
-#     "sql.current-database" = local.kafka.cluster_name
-#   }
-#   rest_endpoint = local.flink_weather_compute.rest_endpoint
-#   credentials {
-#     key    = local.sa_kafka_cluster_mgr.api_key_id
-#     secret = local.sa_kafka_cluster_mgr.api_key_secret
-#   }
-#
-#   depends_on = [
-#     confluent_kafka_topic.noaa_zones_inbound,
-#     # confluent_connector.noaa_zones_source
-#   ]
-#
-#   lifecycle {
-#     prevent_destroy = false
-#   }
-# }
+resource "confluent_flink_statement" "create_noaa_zones" {
+  organization {
+    id = local.confluent_env.org_id
+  }
+  environment {
+    id = local.confluent_env.id
+  }
+  compute_pool {
+    id = local.flink_weather_compute.id
+  }
+  principal {
+    id = local.sa_flink_statements_runner.id
+  }
+  statement     = file("./flink-sql/zones/00__create_noaa_zones.sql")
+  properties = {
+    "sql.current-catalog"  = local.confluent_env.display_name
+    "sql.current-database" = local.kafka.cluster_name
+  }
+  rest_endpoint = local.flink_weather_compute.rest_endpoint
+  credentials {
+    key    = local.sa_kafka_manager.api_key_id
+    secret = local.sa_kafka_manager.api_key_secret
+  }
+
+  depends_on = [
+    confluent_kafka_topic.noaa_zones_inbound,
+    # confluent_connector.noaa_zones_source
+  ]
+
+  lifecycle {
+    prevent_destroy = false
+  }
+}

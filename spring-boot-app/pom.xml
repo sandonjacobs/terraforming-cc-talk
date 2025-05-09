@@ -21,6 +21,7 @@
         <java.version>21</java.version>
         <confluent.version>7.9.0</confluent.version>
         <avro.version>1.11.3</avro.version>
+        <faker.version>2.0.2</faker.version>
     </properties>
 
     <dependencies>
@@ -52,6 +53,13 @@
             <groupId>org.apache.avro</groupId>
             <artifactId>avro</artifactId>
             <version>${avro.version}</version>
+        </dependency>
+
+        <!-- Java Faker -->
+        <dependency>
+            <groupId>com.github.javafaker</groupId>
+            <artifactId>javafaker</artifactId>
+            <version>${faker.version}</version>
         </dependency>
 
         <!-- Test Dependencies -->

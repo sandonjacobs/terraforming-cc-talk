@@ -67,7 +67,7 @@ resource "vault_generic_secret" "sa_kafka_manager" {
 resource "vault_generic_secret" "sa_schema_registry_manager" {
   path      = "${var.vault_path}/sa_schema_registry_manager"
   data_json = jsonencode({
-    svc_acct_id = confluent_service_account.sr-manager.id
+    id = confluent_service_account.sr-manager.id
     api_key_id = confluent_api_key.sr-manager-api-key.id
     api_key_secret = confluent_api_key.sr-manager-api-key.secret
   })
@@ -77,31 +77,30 @@ resource "vault_generic_secret" "sa_schema_registry_manager" {
   }
 }
 
-# resource "vault_generic_secret" "flink_developer" {
-#   path      = "${var.vault_path}/flink_developer"
-#   data_json = jsonencode({
-#     svc_acct_id = confluent_service_account.flink-developer.id
-#     api_key_id = confluent_api_key.flink-developer.id
-#     api_key_secret = confluent_api_key.flink-developer.secret
-#   })
-#
-#   lifecycle {
-#     prevent_destroy = false
-#   }
-# }
+resource "vault_generic_secret" "sa_flink_statements_runner" {
+  path      = "${var.vault_path}/sa_flink_statements_runner"
+  data_json = jsonencode({
+    id = confluent_service_account.flink-statements-runner.id
+    api_key_id = confluent_api_key.kafka-manager-flink-api-key.id
+    api_key_secret = confluent_api_key.kafka-manager-flink-api-key.secret
+  })
 
+  lifecycle {
+    prevent_destroy = false
+  }
+}
 
-# resource "vault_generic_secret" "flink_weather_compute" {
-#
-#   path = "${var.vault_path}/flink_weather_compute"
-#
-#   data_json = jsonencode({
-#     pool_id = confluent_flink_compute_pool.weather_compute_pool.id
-#     pool_name = confluent_flink_compute_pool.weather_compute_pool.display_name
-#     region_rest_endpoint = data.confluent_flink_region.weather_compute_pool.rest_endpoint
-#   })
-#
-#   lifecycle {
-#     prevent_destroy = false
-#   }
-# }
+resource "vault_generic_secret" "flink_weather_compute" {
+
+  path = "${var.vault_path}/flink_weather_compute"
+
+  data_json = jsonencode({
+    pool_id = confluent_flink_compute_pool.weather_compute_pool.id
+    pool_name = confluent_flink_compute_pool.weather_compute_pool.display_name
+    region_rest_endpoint = data.confluent_flink_region.weather_compute_pool.rest_endpoint
+  })
+
+  lifecycle {
+    prevent_destroy = false
+  }
+}

@@ -9,19 +9,17 @@ data "vault_generic_secret" "sa_kafka_manager" {
   path = "${var.vault_path}/sa_kafka_manager"
 }
 
-
-# data "vault_generic_secret" "flink_developer" {
-#   path = "${var.vault_path}/flink_developer"
-# }
-#
-
 data "vault_generic_secret" "cc_schema_registry" {
   path = "${var.vault_path}/schema-registry"
 }
 
-# data "vault_generic_secret" "flink_weather_compute" {
-#   path = "${var.vault_path}/flink_weather_compute"
-# }
+data "vault_generic_secret" "flink_weather_compute" {
+  path = "${var.vault_path}/flink_weather_compute"
+}
+
+data "vault_generic_secret" "sa_flink_statements_runner" {
+  path = "${var.vault_path}/sa_flink_statements_runner"
+}
 
 locals {
   confluent_env = {
@@ -50,23 +48,15 @@ locals {
     api_key_secret = data.vault_generic_secret.sa_kafka_manager.data["secret"]
   }
 
+  flink_weather_compute = {
+    id = data.vault_generic_secret.flink_weather_compute.data["pool_id"]
+    name = data.vault_generic_secret.flink_weather_compute.data["pool_name"]
+    rest_endpoint = data.vault_generic_secret.flink_weather_compute.data["region_rest_endpoint"]
+  }
 
-
-  # kafka_developer = {
-  #   svc_acct_id = data.vault_generic_secret.kafka_developer.data["svc_acct_id"]
-  #   api_key_id = data.vault_generic_secret.kafka_developer.data["api_key_id"]
-  #   api_key_secret = data.vault_generic_secret.kafka_developer.data["api_key_secret"]
-  # }
-
-  # flink_developer = {
-  #   svc_acct_id = data.vault_generic_secret.flink_developer.data["svc_acct_id"]
-  #   api_key_id = data.vault_generic_secret.flink_developer.data["api_key_id"]
-  #   api_key_secret = data.vault_generic_secret.flink_developer.data["api_key_secret"]
-  # }
-
-  # flink_weather_compute = {
-  #   id = data.vault_generic_secret.flink_weather_compute.data["pool_id"]
-  #   name = data.vault_generic_secret.flink_weather_compute.data["pool_name"]
-  #   rest_endpoint = data.vault_generic_secret.flink_weather_compute.data["region_rest_endpoint"]
-  # }
+  sa_flink_statements_runner = {
+    id = data.vault_generic_secret.sa_flink_statements_runner.data["id"]
+    api_key_id = data.vault_generic_secret.sa_flink_statements_runner.data["api_key_id"]
+    api_key_secret = data.vault_generic_secret.sa_flink_statements_runner.data["api_key_secret"]
+  }
 }

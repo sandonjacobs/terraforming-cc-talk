@@ -13,7 +13,7 @@ resource "confluent_kafka_topic" "noaa_zones_inbound" {
   }
   credentials {
     key    = local.sa_kafka_manager.api_key_id
-    secret = local.sa_kafka_manager.api_key_secret
+    secret = sensitive(local.sa_kafka_manager.api_key_secret)
   }
 
   lifecycle {
@@ -21,7 +21,7 @@ resource "confluent_kafka_topic" "noaa_zones_inbound" {
   }
 }
 
-// Assign Roles to `kafka-developer` needed to interact with kafka topics, by convention
+# Assign Roles to `kafka-developer` needed to interact with kafka topics, by convention
 # resource "confluent_role_binding" "kafka-developer-developer-write-noaa" {
 #   principal   = "User:${local.kafka_developer.svc_acct_id}"
 #   role_name   = "DeveloperWrite"
