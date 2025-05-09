@@ -41,3 +41,8 @@ provider "vault" {
   address = var.vault_addr
 #   token = "root"
 }
+
+
+data "confluent_organization" "cc_org" {
+
+}

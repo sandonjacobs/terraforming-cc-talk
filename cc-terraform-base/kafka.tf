@@ -20,6 +20,24 @@ data "confluent_schema_registry_cluster" "advanced" {
   depends_on = [confluent_kafka_cluster.kafka_cluster]
 }
 
+resource "confluent_schema_registry_cluster_config" "schema_registry_cluster_config" {
+  schema_registry_cluster {
+    id = data.confluent_schema_registry_cluster.advanced.id
+  }
+  rest_endpoint = data.confluent_schema_registry_cluster.advanced.rest_endpoint
+  compatibility_level = "BACKWARD"
+  credentials {
+    key    = confluent_api_key.sr-manager-api-key.id
+    secret = confluent_api_key.sr-manager-api-key.secret
+  }
+
+  depends_on = [data.confluent_schema_registry_cluster.advanced]
+
+  lifecycle {
+    prevent_destroy = false
+  }
+}
+
 
 // Kafka Connect Service Account
 
@@ -70,21 +88,3 @@ data "confluent_schema_registry_cluster" "advanced" {
 #   ]
 # }
 #
-# resource "confluent_schema_registry_cluster_config" "schema_registry_cluster_config" {
-#   schema_registry_cluster {
-#     id = data.confluent_schema_registry_cluster.advanced.id
-#   }
-#   rest_endpoint = data.confluent_schema_registry_cluster.advanced.rest_endpoint
-#   compatibility_level = "BACKWARD"
-#   credentials {
-#     key    = confluent_api_key.env-manager-schema-registry-api-key.id
-#     secret = confluent_api_key.env-manager-schema-registry-api-key.secret
-#   }
-#
-#   depends_on = [data.confluent_schema_registry_cluster.advanced,
-#     confluent_api_key.env-manager-schema-registry-api-key]
-#
-#   lifecycle {
-#     prevent_destroy = false
-#   }
-# }

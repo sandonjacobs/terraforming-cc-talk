@@ -1,4 +1,4 @@
-create table ws_zones (
+create table noaa_zones (
                           zoneId STRING,
                           url STRING,
                           name STRING,
