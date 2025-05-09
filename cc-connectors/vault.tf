@@ -5,18 +5,20 @@ data "vault_generic_secret" "cc_kafka" {
   path = "${var.vault_path}/kafka"
 }
 
-data "vault_generic_secret" "kafka_cluster_mgr" {
-  path = "${var.vault_path}/kafka_cluster_mgr"
+data "vault_generic_secret" "sa_kafka_manager" {
+  path = "${var.vault_path}/sa_kafka_manager"
 }
 
-data "vault_generic_secret" "kafka_developer" {
-  path = "${var.vault_path}/kafka_developer"
-}
 
-# data "vault_generic_secret" "cc_schema_registry" {
-#   path = "${var.vault_path}/schema-registry"
+# data "vault_generic_secret" "flink_developer" {
+#   path = "${var.vault_path}/flink_developer"
 # }
 #
+
+data "vault_generic_secret" "cc_schema_registry" {
+  path = "${var.vault_path}/schema-registry"
+}
+
 # data "vault_generic_secret" "flink_weather_compute" {
 #   path = "${var.vault_path}/flink_weather_compute"
 # }
@@ -38,27 +40,33 @@ locals {
     rbac_crn = data.vault_generic_secret.cc_kafka.data["rbac_crn"]
   }
 
-  sa_kafka_cluster_mgr = {
-    api_key_id = data.vault_generic_secret.kafka_cluster_mgr.data["api_key"]
-    api_key_secret = data.vault_generic_secret.kafka_cluster_mgr.data["secret"]
+  schema_registry = {
+    endpoint = data.vault_generic_secret.cc_schema_registry.data["endpoint"]
+    id = data.vault_generic_secret.cc_schema_registry.data["id"]
+  }
+
+  sa_kafka_manager = {
+    api_key_id = data.vault_generic_secret.sa_kafka_manager.data["api_key"]
+    api_key_secret = data.vault_generic_secret.sa_kafka_manager.data["secret"]
   }
 
 
-  # schema_registry_endpoint = data.vault_generic_secret.cc_schema_registry.data["schema_registry_endpoint"]
-  # schema_registry_id = data.vault_generic_secret.cc_schema_registry.data["schema_registry_id"]
-  # schema_registry_api_key = data.vault_generic_secret.cc_schema_registry.data["schema_registry_api_key"]
-  # schema_registry_api_secret = data.vault_generic_secret.cc_schema_registry.data["schema_registry_api_secret"]
-  #
-  # flink_weather_compute_id = data.vault_generic_secret.flink_weather_compute.data["flink_compute_pool_id"]
-  # flink_stmt_runner_id = data.vault_generic_secret.flink_weather_compute.data["flink_stmt_runner_id"]
-  # flink_weather_region_rest_endpoint = data.vault_generic_secret.flink_weather_compute.data["flink_region_rest_endpoint"]
-  # flink_api_key = data.vault_generic_secret.flink_weather_compute.data["flink_api_key"]
-  # flink_api_secret = data.vault_generic_secret.flink_weather_compute.data["flink_api_secret"]
 
-  kafka_developer = {
-    svc_acct_id = data.vault_generic_secret.kafka_developer.data["svc_acct_id"]
-    api_key_id = data.vault_generic_secret.kafka_developer.data["api_key_id"]
-    api_key_secret = data.vault_generic_secret.kafka_developer.data["api_key_secret"]
-  }
+  # kafka_developer = {
+  #   svc_acct_id = data.vault_generic_secret.kafka_developer.data["svc_acct_id"]
+  #   api_key_id = data.vault_generic_secret.kafka_developer.data["api_key_id"]
+  #   api_key_secret = data.vault_generic_secret.kafka_developer.data["api_key_secret"]
+  # }
 
+  # flink_developer = {
+  #   svc_acct_id = data.vault_generic_secret.flink_developer.data["svc_acct_id"]
+  #   api_key_id = data.vault_generic_secret.flink_developer.data["api_key_id"]
+  #   api_key_secret = data.vault_generic_secret.flink_developer.data["api_key_secret"]
+  # }
+
+  # flink_weather_compute = {
+  #   id = data.vault_generic_secret.flink_weather_compute.data["pool_id"]
+  #   name = data.vault_generic_secret.flink_weather_compute.data["pool_name"]
+  #   rest_endpoint = data.vault_generic_secret.flink_weather_compute.data["region_rest_endpoint"]
+  # }
 }
