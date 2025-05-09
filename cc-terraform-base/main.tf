@@ -31,6 +31,10 @@ resource "confluent_environment" "cc_env" {
   }
 }
 
+data "confluent_environment" "cc_env" {
+  id = confluent_environment.cc_env.id
+}
+
 provider "vault" {
   auth_login {
     path = "auth/userpass/login/${var.vault_user}"
