@@ -1,0 +1,9 @@
+# Keys that must be present in the root .env before Ida's workspace runs.
+# scripts/load-env.sh exports exactly these as TF_VAR_<lowercased key>.
+OMAR_ENVIRONMENT_ID
+OMAR_KAFKA_CLUSTER_ID
+OMAR_KAFKA_REST_ENDPOINT
+OMAR_IDA_KAFKA_API_KEY
+OMAR_IDA_KAFKA_API_SECRET
+OMAR_IDA_CLOUD_API_KEY
+OMAR_IDA_CLOUD_API_SECRET

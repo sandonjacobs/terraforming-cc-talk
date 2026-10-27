@@ -1,0 +1,25 @@
+# Secrets and hand-off file
+.env
+**/.env
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+crash.log
+
+# Build output
+target/
+
+# Teresa's notebook: virtualenv and Jupyter leftovers
+**/.venv/
+.ipynb_checkpoints/
+__pycache__/
+
+# Local leftovers from the old Vault setup
+vault_data/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/

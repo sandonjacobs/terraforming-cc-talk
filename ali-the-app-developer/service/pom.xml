@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>talks.sandonjacobs</groupId>
+  <artifactId>ali-app-events-producer</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <name>Ali's app events producer</name>
+  <description>Local Java producer. Build flow: download Dan's schema from Schema Registry,
+    generate Java classes from it, compile.</description>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.release>21</maven.compiler.release>
+    <!-- Where the schema registry plugin writes (and the Avro plugin reads) Dan's schemas. -->
+    <schemas.dir>${project.build.directory}/schemas</schemas.dir>
+    <kafka.version>4.3.1</kafka.version>
+    <confluent.version>8.3.0</confluent.version>
+    <avro.version>1.12.0</avro.version>
+    <slf4j.version>2.0.16</slf4j.version>
+    <junit.version>5.11.4</junit.version>
+  </properties>
+
+  <repositories>
+    <repository>
+      <id>confluent</id>
+      <url>https://packages.confluent.io/maven/</url>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>confluent</id>
+      <url>https://packages.confluent.io/maven/</url>
+    </pluginRepository>
+  </pluginRepositories>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.kafka</groupId>
+      <artifactId>kafka-clients</artifactId>
+      <version>${kafka.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.confluent</groupId>
+      <artifactId>kafka-avro-serializer</artifactId>
+      <version>${confluent.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.avro</groupId>
+      <artifactId>avro</artifactId>
+      <version>${avro.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <!-- Step 2: generate Java classes (AppEvent, EventType) from the downloaded schemas. -->
+      <plugin>
+        <groupId>org.apache.avro</groupId>
+        <artifactId>avro-maven-plugin</artifactId>
+        <version>${avro.version}</version>
+        <executions>
+          <execution>
+            <id>generate-app-event-classes</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>schema</goal>
+            </goals>
+            <configuration>
+              <sourceDirectory>${schemas.dir}</sourceDirectory>
+              <stringType>String</stringType>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.5.2</version>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.5.0</version>
+        <configuration>
+          <mainClass>talks.sandonjacobs.ali.Main</mainClass>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <!--
+      Default: step 1 downloads Dan's schema for ALI_EVENTS_TOPIC from Schema Registry with Ali's
+      credentials. All values come from the environment, which `make` loads from .env. Bound to
+      initialize so it runs before the Avro plugin (generate-sources).
+    -->
+    <profile>
+      <id>fetch-schemas</id>
+      <activation>
+        <property>
+          <name>!offline</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>io.confluent</groupId>
+            <artifactId>kafka-schema-registry-maven-plugin</artifactId>
+            <version>${confluent.version}</version>
+            <executions>
+              <execution>
+                <id>download-dans-schemas</id>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>download</goal>
+                </goals>
+                <configuration>
+                  <schemaRegistryUrls>
+                    <param>${env.OMAR_SCHEMA_REGISTRY_REST_ENDPOINT}</param>
+                  </schemaRegistryUrls>
+                  <userInfoConfig>${env.OMAR_ALI_SCHEMA_REGISTRY_API_KEY}:${env.OMAR_ALI_SCHEMA_REGISTRY_API_SECRET}</userInfoConfig>
+                  <subjectPatterns>
+                    <param>^${env.ALI_EVENTS_TOPIC}-value$</param>
+                  </subjectPatterns>
+                  <outputDirectory>${schemas.dir}</outputDirectory>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <!--
+      `mvn -Doffline ...` (used by `make check`): no Schema Registry, so copy the schema file from
+      Dan's directory instead. The same Avro plugin then generates the same classes.
+    -->
+    <profile>
+      <id>offline</id>
+      <activation>
+        <property>
+          <name>offline</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-resources-plugin</artifactId>
+            <version>3.3.1</version>
+            <executions>
+              <execution>
+                <id>copy-dans-schemas</id>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>copy-resources</goal>
+                </goals>
+                <configuration>
+                  <outputDirectory>${schemas.dir}</outputDirectory>
+                  <resources>
+                    <resource>
+                      <directory>${project.basedir}/../../dan-the-data-guy/schemas</directory>
+                      <includes>
+                        <include>app-events.avsc</include>
+                      </includes>
+                    </resource>
+                  </resources>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

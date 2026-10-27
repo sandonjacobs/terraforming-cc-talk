@@ -1,0 +1,7 @@
+# Teresa's notebook only. The offline checks (test_*.py, check_notebook.py) need none of these.
+# Python 3.11 to 3.13 is recommended: wheels for these libraries on 3.14 are unconfirmed
+# (research.md item 21). `make teresa-notebook` installs this into notebook/.venv.
+pyiceberg[pyarrow]>=0.9
+pandas>=2.2
+matplotlib>=3.9
+jupyterlab>=4.2

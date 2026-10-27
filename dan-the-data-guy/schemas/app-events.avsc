@@ -1,0 +1,21 @@
+{
+  "type": "record",
+  "name": "AppEvent",
+  "namespace": "talks.sandonjacobs.ali",
+  "doc": "A generic application event produced by Ali's demo microservice. The use case is still to be decided.",
+  "fields": [
+    {"name": "event_id", "type": "string", "doc": "Unique ID of the event"},
+    {"name": "event_time", "type": {"type": "long", "logicalType": "timestamp-millis"}, "doc": "When the event happened"},
+    {
+      "name": "event_type",
+      "type": {
+        "type": "enum",
+        "name": "EventType",
+        "symbols": ["CREATED", "UPDATED", "DELETED", "UNKNOWN"],
+        "default": "UNKNOWN"
+      },
+      "default": "UNKNOWN",
+      "doc": "What kind of event this is, for example created, updated or deleted"
+    }
+  ]
+}
